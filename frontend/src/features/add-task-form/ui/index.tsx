@@ -1,9 +1,27 @@
+import type { FormEvent } from 'react'
 import { Button, Card, CardBody, Form, Input, Textarea } from '@heroui/react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { todolistApi } from '@/shared/api'
 
 export const AddTaskForm = () => {
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const queryClient = useQueryClient()
+
+	const addTask = useMutation({
+		mutationFn: todolistApi.addTask,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['todolists'] })
+		},
+	})
+
+	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		const data = Object.fromEntries(new FormData(e.currentTarget));
+		
+		addTask.mutate({
+			title: data.title as string,
+			description: data.description as string,
+		})
 	}
 
 	return (
