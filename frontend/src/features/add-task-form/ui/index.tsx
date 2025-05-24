@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, Input, Textarea } from '@heroui/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { taskApi } from '@/shared/api'
+import { QueryKeysEnum, taskApi } from '@/shared/api'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form'
 import { addTaskFormSchema, type AddTaskFormSchema } from '../model'
@@ -17,7 +17,7 @@ export const AddTaskForm = () => {
 		mutationFn: taskApi.addTask,
 		onSuccess: () => {
 			reset()
-			queryClient.invalidateQueries({ queryKey: ['todolists'] })
+			queryClient.invalidateQueries({ queryKey: [QueryKeysEnum.TASK] })
 		},
 	})
 

@@ -14,7 +14,7 @@ export const Task = (props: Props) => {
 	const { task, updateTaskStatus, deleteTask } = props
 	
 	const handleChangeCheckbox = (event: ChangeEvent<HTMLInputElement>) => {
-		const newStatus = event.target.checked ? TaskStatusEnum.COMPLETED : TaskStatusEnum.ACTIVE
+		const newStatus = event.target.checked ? TaskStatusEnum.COMPLETED : TaskStatusEnum.CREATED
 		updateTaskStatus(task.id, newStatus)
 	}
 

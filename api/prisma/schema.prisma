@@ -18,7 +18,7 @@ enum taskStatus {
 model task {
   id          String     @id @default(uuid())
   title       String
-  description String
+  description String?
   status      taskStatus @default(created)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime?  @updatedAt
