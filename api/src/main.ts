@@ -10,7 +10,6 @@ async function bootstrap() {
   .setTitle('Todolist API')
   .setDescription('The Todolist API description')
   .setVersion('1.0')
-  .addTag('todolist')
   .build();
   
   const document = SwaggerModule.createDocument(app, config);

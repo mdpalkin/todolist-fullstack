@@ -1,8 +1,7 @@
-import {IsEnum, IsOptional, IsString} from 'class-validator'
+import {IsBoolean, IsEnum, IsOptional, IsString} from 'class-validator'
 import {ApiProperty} from '@nestjs/swagger'
-import {task_status} from '@prisma/client'
 
-export class CreateTodolistDto {
+export class CreateTaskDTO {
   @ApiProperty({ default: 'Task title' })
   @IsString()
   title: string
@@ -10,7 +9,7 @@ export class CreateTodolistDto {
   @ApiProperty({ default: 'Task description' })
   description: string;
   @ApiProperty({ default: false })
-  @IsEnum( task_status )
+  @IsBoolean()
   @IsOptional()
-  status?: task_status
+  isCompleted?: boolean
 }
