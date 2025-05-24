@@ -1,0 +1,20 @@
+export enum TaskStatusEnum {
+	CREATED = 'created',
+	ACTIVE = 'active',
+	COMPLETED = 'completed',
+}
+
+export interface ITask {
+	id: string;
+	title: string;
+	description?: string;
+	createdAt: Date;
+	updatedAt: Date;
+	status: TaskStatusEnum;
+}
+
+export interface GetTaskParams {
+	title?: string;
+	description?: string;
+	status?: TaskStatusEnum;
+}

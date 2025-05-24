@@ -4,7 +4,7 @@ import { Outlet } from 'react-router'
 
 export const Layout = () => {
   return (
-  <div className="dark min-h-screen bg-left bg-gradient-to-r from-neutral-700 to-black">
+  <div className="dark min-h-screen h-full">
   <Navbar className='shadow-sm' shouldHideOnScroll>
     <NavbarBrand>
       <BeakerIcon className="h-8 w-8" color={'#006fee'} />

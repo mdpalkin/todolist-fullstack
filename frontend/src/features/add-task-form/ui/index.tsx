@@ -1,50 +1,56 @@
-import type { FormEvent } from 'react'
-import { Button, Card, CardBody, Form, Input, Textarea } from '@heroui/react'
+import { Button, Card, CardBody, Input, Textarea } from '@heroui/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { todolistApi } from '@/shared/api'
+import { taskApi } from '@/shared/api'
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from 'react-hook-form'
+import { addTaskFormSchema, type AddTaskFormSchema } from '../model'
 
 export const AddTaskForm = () => {
 
 	const queryClient = useQueryClient()
 
+	const { register, formState: { errors }, handleSubmit, reset } = useForm<AddTaskFormSchema>({
+		resolver: zodResolver(addTaskFormSchema)
+	})
+
 	const addTask = useMutation({
-		mutationFn: todolistApi.addTask,
+		mutationFn: taskApi.addTask,
 		onSuccess: () => {
+			reset()
 			queryClient.invalidateQueries({ queryKey: ['todolists'] })
 		},
 	})
 
-	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		const data = Object.fromEntries(new FormData(e.currentTarget));
-		
+	const onSubmit = (data: AddTaskFormSchema) => {
 		addTask.mutate({
-			title: data.title as string,
-			description: data.description as string,
+			title: data.title,
+			description: data.description,
 		})
 	}
 
 	return (
-		<Card className='m-10 p-2'>
+		<Card className='p-2'>
 			<CardBody>
-			<Form onSubmit={onSubmit} className="flex flex-col gap-4">
+			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 				<Input
-					name='title'
 					label='Title'
 					labelPlacement='outside'
-					isRequired
-					placeholder='Enter task title' 
+					placeholder='Enter task title'
+					errorMessage={errors.title?.message} 
+					isInvalid={!!errors.title}
+					{...register('title')}
 				/>
 				<Textarea 
-				name='description'
 				label='Description'
 				labelPlacement='outside'
 				placeholder='Enter task description'
+				errorMessage={errors.description?.message}
+				{...register('description')}
 				/>
-				<Button variant='flat' type='submit' color='primary' className='w-full'>
+				<Button isLoading={addTask.isPending} variant='flat' type='submit' color='primary' className='w-full'>
 					Add Task
 				</Button>
-			</Form>
+			</form>
 			</CardBody>
 		</Card>		
 	)
