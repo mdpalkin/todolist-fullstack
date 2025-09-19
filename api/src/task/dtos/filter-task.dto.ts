@@ -3,6 +3,10 @@ import { taskStatus } from '@prisma/client'
 import { IsEnum, IsOptional, IsString } from 'class-validator'
 
 export class FilterTaskDTO {
+	@IsString()
+	@ApiPropertyOptional({ description: 'Filter by todolistId'})
+	todolistId?: string;
+
 	@ApiPropertyOptional({ description: 'Filter by title'})
 	@IsOptional()
 	@IsString()

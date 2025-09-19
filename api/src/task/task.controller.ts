@@ -8,31 +8,31 @@ import { FilterTaskDTO } from './dtos'
 @Controller('task')
 @ApiTags('task')
 export class TaskController {
-  constructor(private todolistService: TaskService) {}
+  constructor(private taskService: TaskService) {}
   
-  @Get()
+  @Get(':todolistId')
   @ApiOperation({ summary: 'Get tasks' })
   find(
     @Query() filterQuery: FilterTaskDTO 
   ) {
-    return this.todolistService.get(filterQuery)
+    return this.taskService.get(filterQuery)
   }
   
   @Post()
   @ApiOperation({ summary: 'Create a new task' })
   create(@Body() createTodoDto: CreateTaskDTO) {
-    return this.todolistService.create(createTodoDto)
+    return this.taskService.create(createTodoDto)
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Get all tasks' })
+  @ApiOperation({ summary: 'Update task' })
   update(@Param('id') id: string, @Body() updateTodolist: CreateTaskDTO) {
-    return this.todolistService.update(id, updateTodolist)
+    return this.taskService.update(id, updateTodolist)
   }
   
   @Delete(':id')
   @ApiOperation({ summary: 'Delete task' })
   delete(@Param('id') id: string) {
-    return this.todolistService.delete(id)
+    return this.taskService.delete(id)
   }
 }

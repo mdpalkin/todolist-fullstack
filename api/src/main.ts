@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import { DocumentBuilder } from '@nestjs/swagger/dist/document-builder'
-import { SwaggerModule } from '@nestjs/swagger/dist/swagger-module'
+import { DocumentBuilder } from '@nestjs/swagger'
+import { SwaggerModule } from '@nestjs/swagger'
+import { apiReference } from '@scalar/nestjs-api-reference'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -13,7 +14,9 @@ async function bootstrap() {
   .build();
   
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+
+  app.use('/api', apiReference({ content: document }));
+
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

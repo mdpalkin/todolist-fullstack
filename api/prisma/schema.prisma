@@ -22,4 +22,14 @@ model task {
   status      taskStatus @default(created)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime?  @updatedAt
+  todolist    todolist?  @relation(fields: [todolistId], references: [todolistId])
+  todolistId  String?
+}
+
+model todolist {
+  todolistId          String     @id @default(uuid())
+  title       String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime?  @updatedAt
+  tasks       task[]
 }
