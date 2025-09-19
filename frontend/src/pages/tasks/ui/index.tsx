@@ -1,46 +1,36 @@
 import { AddTaskForm } from '@/features/add-task-form'
-import { QueryKeysEnum, taskApi } from '@/shared/api'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { taskApi } from '@/shared/api/reminder-api'
+import { useMutation } from '@tanstack/react-query'
 import { Task } from './task'
 import { TaskSkeleton } from './task/skeleton'
-import { useCallback, useEffect, useState, type ChangeEvent, type Key } from 'react'
+import { useCallback, type ChangeEvent, type Key } from 'react'
 import { Input, Tab, Tabs } from '@heroui/react'
-import { TaskStatusEnum } from '@/shared/api/task/types'
+import { TaskStatusEnum } from '@/shared/api/reminder-api/task/types'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { useDebouncedCallback } from 'use-debounce';
+import { useParams, useSearchParams } from 'react-router'
+import { useTasks } from '@/entities/task/api/query'
 
-export const Main = () => {
-	const queryClient = useQueryClient()
-	const [status, setStatus] = useState<TaskStatusEnum | null>(null)
-	const [search, setSearch] = useState<string>('')
+export const Tasks = () => {
+	const { id } = useParams<{ id: string }>()
+	const [searchParams, setSearchParams] = useSearchParams()
+
+	const status = searchParams.get('status') as TaskStatusEnum
+	const title = searchParams.get('title')
 	
-	const { data: fetchData, isLoading, refetch } = useQuery({
-		queryKey: [QueryKeysEnum.TASK],
-		queryFn: () => {
-			const filter = {
-				...(!!status ? { status } : {}),
-				...(!!search ? { title: search } : {}),
-			}
-			return taskApi.getTasks(filter)
-		},
-		select: (data) => data.data,
-	})
-
-	useEffect(() => {
-		refetch()
-	}, [status, search])
+	const { data: fetchData, isLoading, refetch } = useTasks(id!, { status, title: title || undefined })
 	
 	const updateTask = useMutation({
 		mutationFn: taskApi.updateTask,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [QueryKeysEnum.TASK] })
+			refetch()
 		},
 	})
 
 	const deleteTask = useMutation({
 		mutationFn: taskApi.deleteTask,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [QueryKeysEnum.TASK] })
+			refetch()
 		},
 	})
 
@@ -55,11 +45,11 @@ export const Main = () => {
 	
 	const handleChageTab = (event: Key | null) => {
 		const newStatus = event === 'all' ? null : ( event as TaskStatusEnum )
-		setStatus(newStatus)
+		setSearchParams({ status: newStatus || '' })
 	}
 
 	const handleSearchChange = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
-		setSearch(event.target.value.trim())
+		setSearchParams({ search: event.target.value.trim()})
 	}, 500)
 
 	return (

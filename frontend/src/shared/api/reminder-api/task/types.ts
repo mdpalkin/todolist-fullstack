@@ -11,6 +11,7 @@ export interface ITask {
 	createdAt: Date;
 	updatedAt: Date;
 	status: TaskStatusEnum;
+	todolistId?: string;
 }
 
 export interface GetTaskParams {

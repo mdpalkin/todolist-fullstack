@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import {Layout} from '@/widgets/layout'
-import { Main } from '@/pages/main'
+import { Tasks } from '@/pages/tasks'
+import { Todolists } from '@/pages/todolists/ui'
 
 function App() {
 
@@ -10,10 +11,14 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
+        path: 'tasks/:id',
+        element: <Tasks />
+      },
+      {
         index: true,
-        element: <Main />
+        element: <Todolists />
       }
-    ]    
+    ]
   }
 ])
 

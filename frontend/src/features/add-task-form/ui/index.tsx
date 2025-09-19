@@ -1,13 +1,21 @@
 import { Button, Card, CardBody, Input, Textarea } from '@heroui/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { QueryKeysEnum, taskApi } from '@/shared/api'
+import { taskApi } from '@/shared/api/reminder-api'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form'
 import { addTaskFormSchema, type AddTaskFormSchema } from '../model'
+import { tasksQueryKeys } from '@/entities/task/api/query'
+import { useParams, useSearchParams } from 'react-router'
+import type { TaskStatusEnum } from '@/shared/api'
 
 export const AddTaskForm = () => {
 
 	const queryClient = useQueryClient()
+	const { id } = useParams<{ id: string }>()
+	const [ searchParams ] = useSearchParams()
+
+	const status = searchParams.get('status') as TaskStatusEnum
+	const title = searchParams.get('title')
 
 	const { register, formState: { errors }, handleSubmit, reset } = useForm<AddTaskFormSchema>({
 		resolver: zodResolver(addTaskFormSchema)
@@ -17,7 +25,7 @@ export const AddTaskForm = () => {
 		mutationFn: taskApi.addTask,
 		onSuccess: () => {
 			reset()
-			queryClient.invalidateQueries({ queryKey: [QueryKeysEnum.TASK] })
+			queryClient.invalidateQueries({ queryKey: tasksQueryKeys.all(id!, { status, title: title || undefined }) })
 		},
 	})
 

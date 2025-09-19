@@ -1,4 +1,4 @@
-import { TaskStatusEnum, type ITask } from '@/shared/api/task/types'
+import { TaskStatusEnum, type ITask } from '@/shared/api/reminder-api/task/types'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { Card, CardBody, Checkbox } from '@heroui/react'
 import { format } from 'date-fns'
