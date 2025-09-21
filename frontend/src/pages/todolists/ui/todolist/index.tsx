@@ -1,6 +1,9 @@
 import {Card, CardFooter, Image, Button} from "@heroui/react";
 import type { ITodolist } from "@/shared/api/reminder-api/todolist/types";
 import { useNavigate } from 'react-router'
+import { TrashIcon } from '@heroicons/react/24/outline'
+import { useQueryClient } from '@tanstack/react-query'
+import { todolistsQueryKeys, useDeleteTodolist } from '@/entities/todolist/api'
 
 interface Props {
 	todolist: ITodolist
@@ -11,12 +14,25 @@ export const Todolist = (props: Props) => {
 
 	const navigate = useNavigate()
 
-	const handleGoToTasks = () => {
+	const handleNavigateToTasks = () => {
 		navigate(`/tasks/${todolist.todolistId}`)
 	}
 
+	const queryClient = useQueryClient()
+
+	const onSuccess = () => {
+		queryClient.invalidateQueries({ queryKey: todolistsQueryKeys.all })
+	}	
+
+	const { mutate: deleteTodolist } = useDeleteTodolist(onSuccess)
+
+	const handleDeleteTodolist = () => {
+		deleteTodolist(todolist.todolistId)
+	}
+
 	return (
-		<Card isFooterBlurred className="border-none max-w-50" radius="lg">
+		<Card isFooterBlurred className="group border-none relative max-w-50 hover:scale-102 transition-all duration-300" radius="lg">
+		<TrashIcon className='invisible group-hover:visible absolute top-2 z-12 right-2 w-5 h-5 transition hover:opacity-9 cursor-pointer' onClick={handleDeleteTodolist} />	
 		<Image
 			alt="Woman listing to music"
 			className="object-cover"
@@ -32,7 +48,7 @@ export const Todolist = (props: Props) => {
 				radius="lg"
 				size="sm"
 				variant="flat"
-				onClick={handleGoToTasks}
+				onClick={handleNavigateToTasks}
 			>
 				Go to tasks
 			</Button>

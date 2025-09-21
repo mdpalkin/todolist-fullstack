@@ -1,12 +1,13 @@
+import { useCallback } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { Button, Card, CardBody, Input, Textarea } from '@heroui/react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { taskApi } from '@/shared/api/reminder-api'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form'
 import { addTaskFormSchema, type AddTaskFormSchema } from '../model'
 import { tasksQueryKeys } from '@/entities/task/api/query'
 import { useParams, useSearchParams } from 'react-router'
 import type { TaskStatusEnum } from '@/shared/api'
+import { useCreateTask } from '@/entities/task'
 
 export const AddTaskForm = () => {
 
@@ -21,18 +22,18 @@ export const AddTaskForm = () => {
 		resolver: zodResolver(addTaskFormSchema)
 	})
 
-	const addTask = useMutation({
-		mutationFn: taskApi.addTask,
-		onSuccess: () => {
-			reset()
-			queryClient.invalidateQueries({ queryKey: tasksQueryKeys.all(id!, { status, title: title || undefined }) })
-		},
-	})
+	const onSuccess = useCallback(() => {
+		reset()
+		queryClient.invalidateQueries({ queryKey: tasksQueryKeys.all(id!, { status, title: title || undefined }) })
+	}, [reset, queryClient, status, title])
+
+	const { mutateAsync: addTask, isPending } = useCreateTask(onSuccess)
 
 	const onSubmit = (data: AddTaskFormSchema) => {
-		addTask.mutate({
+		addTask({
 			title: data.title,
 			description: data.description,
+			todolistId: id!
 		})
 	}
 
@@ -55,7 +56,7 @@ export const AddTaskForm = () => {
 				errorMessage={errors.description?.message}
 				{...register('description')}
 				/>
-				<Button isLoading={addTask.isPending} variant='flat' type='submit' color='primary' className='w-full'>
+				<Button isLoading={isPending} variant='flat' type='submit' color='primary' className='w-full'>
 					Add Task
 				</Button>
 			</form>

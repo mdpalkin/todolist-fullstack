@@ -1,13 +1,15 @@
 import {Button, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem} from '@heroui/react'
 import {BeakerIcon} from '@heroicons/react/24/outline'
-import { Outlet } from 'react-router'
+import { Outlet, useNavigate } from 'react-router'
 
 export const Layout = () => {
+  const navigate = useNavigate()
+
   return (
   <div className="dark min-h-screen h-full">
   <Navbar className='shadow-sm' shouldHideOnScroll>
     <NavbarBrand>
-      <BeakerIcon className="h-8 w-8" color={'#006fee'} />
+      <BeakerIcon onClick={() => navigate('/')} className="h-8 w-8 cursor-pointer" color={'#006fee'} />
     </NavbarBrand>
     <NavbarContent justify="end">
       <NavbarItem className="hidden lg:flex">

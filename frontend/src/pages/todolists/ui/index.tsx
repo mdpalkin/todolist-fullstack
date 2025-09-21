@@ -4,16 +4,18 @@ import { Button, useDisclosure } from '@heroui/react'
 import { AddTodolistModal } from '@/features/add-todolist-modal'
 
 export const Todolists = () => {
-	const { data: fetchData, isLoading } = useTodolists()
+	const { data: fetchData } = useTodolists()
 	const { isOpen, onOpenChange } = useDisclosure()
 
   return (
 		<>
-    <div className='max-w-5xl p-10 mx-auto flex flex-col gap-10 my-10'>
+    <div className='max-w-5xl p-10 mx-auto'>
 			<Button onPress={onOpenChange}>Add Todolist</Button>
+      <div className='flex gap-10 my-10'>
       {fetchData?.map((todolist) => (
-        <Todolist key={todolist.todolistId} todolist={todolist} />
-      ))}
+          <Todolist key={todolist.todolistId} todolist={todolist} />
+        ))}
+      </div>
     </div>
 			<AddTodolistModal isOpen={isOpen} onOpenChange={onOpenChange} />
 		</>

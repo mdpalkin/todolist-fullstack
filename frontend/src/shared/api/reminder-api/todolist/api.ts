@@ -8,13 +8,13 @@ export const todolistApi = {
 	getTodolist: (): Promise<AxiosResponse<ITodolist[]>> => {
 		return instance.get('/todolist')
 	},
-	createTodolist: (payload: CreateTodolistDTO): Promise<AxiosResponse<ITodolist>> => {
+	createTodolist: (payload: CreateTodolistDTO): Promise<ITodolist> => {
 		return instance.post('/todolist', payload)
 	},
 	updateTodolist: (todolistId: string, payload: UpdateTodolistDTO): Promise<AxiosResponse<ITodolist>> => {
 		return instance.patch(`/todolist/${todolistId}`, payload)
 	},
-	deleteTodolist: (todolistId: string): Promise<AxiosResponse<void>> => {
+	deleteTodolist: (todolistId: string): Promise<void> => {
 		return instance.delete(`/todolist/${todolistId}`)
 	}
 }

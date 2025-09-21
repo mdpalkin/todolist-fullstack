@@ -13,15 +13,16 @@ export class TaskController {
   @Get(':todolistId')
   @ApiOperation({ summary: 'Get tasks' })
   find(
-    @Query() filterQuery: FilterTaskDTO 
+    @Query() filterQuery: FilterTaskDTO,
+    @Param('todolistId') todolistId: string
   ) {
-    return this.taskService.get(filterQuery)
+    return this.taskService.get({ ...filterQuery, todolistId })
   }
   
-  @Post()
+  @Post(':todolistId')
   @ApiOperation({ summary: 'Create a new task' })
-  create(@Body() createTodoDto: CreateTaskDTO) {
-    return this.taskService.create(createTodoDto)
+  create(@Body() createTodoDto: CreateTaskDTO, @Param('todolistId') todolistId: string) {
+    return this.taskService.create({ ...createTodoDto, todolistId })
   }
 
   @Patch(':id')

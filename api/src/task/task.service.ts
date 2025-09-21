@@ -9,13 +9,14 @@ export class TaskService {
   }
   
   async get(filter: FilterTaskDTO) {
-    const { description, status, title } = filter
+    const { description, status, title, todolistId } = filter
     
     return this.prisma.task.findMany({
       where: {
+        todolistId,
         ...(title && { title: { contains: title, mode: 'insensitive' } }),
         ...(description && { description: { contains: description, mode: 'insensitive' } }),
-        ...(status && { status })
+        ...(status && { status }),
       },
       orderBy: {
         createdAt: 'desc'

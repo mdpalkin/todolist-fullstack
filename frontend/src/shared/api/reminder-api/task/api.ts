@@ -8,13 +8,14 @@ export const taskApi = {
 	getTasks(todolistId: string, params?: GetTaskParams): Promise<AxiosResponse<ITask[]>> {
 		return instance.get<ITask[]>(`/task/${todolistId}`, { params })
 	},
-	addTask(payload: AddTaskDTO) {
-		return instance.post<AddTaskDTO>('/task', payload)
+	addTask(payload: AddTaskDTO): Promise<AxiosResponse<ITask>> {
+		const { todolistId, ...rest } = payload
+		return instance.post<ITask>(`/task/${todolistId}`, rest)
 	},
-	updateTask({id, ...payload}: UpdateTaskDTO) {
-		return instance.patch<AddTaskDTO>(`/task/${id}`, payload)
+	updateTask({id, ...payload}: UpdateTaskDTO): Promise<AxiosResponse<ITask>> {
+		return instance.patch<ITask>(`/task/${id}`, payload)
 	},
-	deleteTask(id: string) {
+	deleteTask(id: string): Promise<void> {
 		return instance.delete(`/task/${id}`)
 	},
 }
